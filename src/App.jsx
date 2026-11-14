@@ -174,7 +174,7 @@ function PageShell({ eyebrow, title, lead, children }) {
 }
 
 function AppDetail({ item }) {
-  return <PageShell eyebrow="APPLICATION / " + item.number title={item.name} lead={item.tagline}>
+  return <PageShell eyebrow={"APPLICATION / " + item.number} title={item.name} lead={item.tagline}>
     <div className="detail-grid">
       <div className={'detail-feature detail-feature-' + item.tone}><div className="detail-feature-inner"><span className="detail-mini-label">COV-APPS ORIGINAL</span><div className="detail-feature-icon"><AppIcon item={item} large /></div><h2>{item.name}</h2><p>Small tools. Better everyday.</p></div><span className="detail-feature-bottom">APP / {item.number}</span></div>
       <div className="detail-copy"><span className="eyebrow small">{item.category}</span><h2>{item.tagline}</h2><p>{item.detail}</p><div className="detail-actions"><ButtonLink href={playSearch(item.name)} external icon={ExternalLink}>Google Play에서 검색</ButtonLink><ButtonLink href="/support/" variant="outline" icon={ArrowUpRight}>고객지원</ButtonLink></div><p className="detail-note"><CircleHelp size={15} /> 스토어 버튼은 앱의 직접 설치 링크가 아닌 검색 결과로 이동합니다.</p></div>
