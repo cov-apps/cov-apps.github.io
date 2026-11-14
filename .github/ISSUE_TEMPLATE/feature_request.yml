@@ -1,0 +1,30 @@
+name: 기능 제안
+description: 앱의 개선 아이디어를 제안합니다.
+title: "[기능 제안] "
+body:
+  - type: input
+    id: app
+    attributes:
+      label: 앱 이름
+      placeholder: "예: JLPT 단어장"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 어떤 문제를 해결하고 싶나요?
+      description: 원하는 기능을 쓰게 되는 사용 상황을 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: 제안하는 기능
+      description: 원하는 동작이나 화면을 설명해 주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 대안 또는 참고 사항
+      description: 선택 항목입니다.
