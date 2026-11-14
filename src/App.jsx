@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { catalog, categories } from './catalog.js';
 import {
   ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Camera, Check,
   ChevronRight, CircleHelp, Code2, ExternalLink, FileText, Github,
@@ -10,6 +11,7 @@ import {
 const playSearch = (name) => 'https://play.google.com/store/search?q=' + encodeURIComponent(name + ' COV-APPS') + '&c=apps';
 const repoUrl = 'https://github.com/cov-apps/cov-apps.github.io';
 const policyTiny = 'https://covapps.blogspot.com/2026/10/tiny-ip-camera.html';
+const supportEmail = 'fireborn328@gmail.com';
 
 const apps = [
   {
@@ -72,6 +74,7 @@ function Header() {
   const [open, setOpen] = useState(false);
   const links = [
     { href: '/#apps', label: 'Apps' },
+    { href: '/#catalog', label: 'All Apps' },
     { href: '/#values', label: 'About' },
     { href: '/support/', label: 'Support' },
   ];
@@ -93,7 +96,7 @@ function Footer() {
     <div className="site-container">
       <div className="footer-top">
         <div><Brand inverted /><p>작고 유용한 앱을 꾸준히 만듭니다.<br />Simple tools, better everyday.</p></div>
-        <div className="footer-links"><div><span>Explore</span><a href="/#apps">Our apps</a><a href="/#values">About us</a></div><div><span>Help</span><a href="/support/">Support</a><a href="/privacy/">Privacy</a><a href="/terms/">Site information</a></div><div><span>Connect</span><a href="https://github.com/cov-apps" target="_blank" rel="noopener noreferrer">GitHub <ArrowUpRight size={13} /></a><a href={repoUrl + '/issues'} target="_blank" rel="noopener noreferrer">Issue tracker <ArrowUpRight size={13} /></a></div></div>
+        <div className="footer-links"><div><span>Explore</span><a href="/#apps">Featured apps</a><a href="/#catalog">All apps</a><a href="/#values">About us</a></div><div><span>Help</span><a href="/support/">Support</a><a href="/privacy/">Privacy</a><a href="/terms/">Site information</a></div><div><span>Connect</span><a href="https://github.com/cov-apps" target="_blank" rel="noopener noreferrer">GitHub <ArrowUpRight size={13} /></a><a href={repoUrl + '/issues'} target="_blank" rel="noopener noreferrer">Issue tracker <ArrowUpRight size={13} /></a><a href={'mailto:' + supportEmail}>Email support <ArrowUpRight size={13} /></a></div></div>
       </div>
       <div className="footer-bottom"><span>© 2026 COV-APPS. All rights reserved.</span><span>Independent app studio · Built with care.</span></div>
     </div>
@@ -133,6 +136,20 @@ function PreviewVisual() {
   </div>;
 }
 
+function CatalogSection() {
+  const [category, setCategory] = useState('all');
+  const [query, setQuery] = useState('');
+  const filtered = catalog.filter(item => (category === 'all' || item.group === category) && item.name.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  return <section id="catalog" className="catalog-section section-anchor"><div className="site-container">
+    <div className="section-heading"><div><span className="eyebrow"><span className="eyebrow-line"></span> FULL APP COLLECTION</span><h2>앱 전체 목록<span>.</span></h2></div><p>공개 앱 정보를 기준으로 정리한 COV-APPS 컬렉션입니다.<br />스토어 직접 연결과 검색 연결을 구분해 제공합니다.</p></div>
+    <div className="catalog-toolbar"><div className="catalog-tabs" role="group" aria-label="앱 종류 선택">{categories.map(item => <button type="button" key={item.id} className={category === item.id ? 'catalog-tab active' : 'catalog-tab'} aria-pressed={category === item.id} onClick={() => setCategory(item.id)}>{item.label}</button>)}</div><label className="catalog-search"><Search size={18} aria-hidden="true" /><span className="sr-only">앱 이름 검색</span><input value={query} onChange={event => setQuery(event.target.value)} placeholder="앱 검색" /></label></div>
+    <div className="catalog-count">검색 결과 <strong>{filtered.length}</strong>개</div>
+    <div className="catalog-grid">{filtered.map((item) => { const Icon = item.group === 'exam' ? BookOpen : item.group === 'language' ? Globe2 : MonitorSmartphone; const link = item.storeUrl || playSearch(item.name); return <article className="catalog-card" key={item.name}><span className={'catalog-icon catalog-icon-' + item.group}><Icon size={23} strokeWidth={1.8} /></span><div className="catalog-copy"><span className="catalog-category">{categories.find(cat => cat.id === item.group)?.label}</span><h3>{item.name}</h3><p>{item.description}</p></div><a className="catalog-link" href={link} target="_blank" rel="noopener noreferrer" aria-label={item.name + ' Google Play ' + (item.storeUrl ? '열기' : '검색')} title={item.storeUrl ? 'Google Play 상세 페이지' : 'Google Play 검색'}>{item.storeUrl ? '스토어 보기' : '스토어 검색'} <ArrowUpRight size={16} /></a></article>; })}</div>
+    {filtered.length === 0 && <p className="catalog-empty">해당하는 앱이 없습니다. 검색어 또는 카테고리를 변경해 주세요.</p>}
+    <p className="apps-footnote"><CircleHelp size={15} /> 일부 앱은 정확한 패키지 링크 확인 전이라 스토어 검색으로 연결됩니다. 출시 지역에 따라 검색 결과가 다를 수 있습니다.</p>
+  </div></section>;
+}
+
 function Home() {
   return <><Header />
     <main>
@@ -143,7 +160,7 @@ function Home() {
             <h1>작은 아이디어로,<br /><span>더 편리한 일상.</span></h1>
             <p className="hero-description">복잡함은 줄이고, 필요한 기능에 집중합니다.<br className="desktop-break" /> COV-APPS는 카메라·학습·생활 속에서 유용하게 쓸 수 있는 앱을 만듭니다.</p>
             <div className="hero-actions"><ButtonLink href="/#apps">Explore our apps</ButtonLink><ButtonLink href="/support/" variant="outline" icon={ArrowUpRight}>Get support</ButtonLink></div>
-            <div className="hero-proof"><span className="proof-bubbles"><span><Camera size={14} /></span><span><BookOpen size={14} /></span><span><Ticket size={14} /></span></span><span><strong>4 apps</strong> across everyday categories</span></div>
+            <div className="hero-proof"><span className="proof-bubbles"><span><Camera size={14} /></span><span><BookOpen size={14} /></span><span><Ticket size={14} /></span></span><span><strong>다양한 앱</strong>을 하나의 개발자 홈페이지에서 만나보세요</span></div>
           </div>
           <PreviewVisual />
         </div>
@@ -153,9 +170,10 @@ function Home() {
         <div className="site-container">
           <div className="section-heading"><div><span className="eyebrow"><span className="eyebrow-line"></span> OUR COLLECTION</span><h2>Everyday apps,<br /><span>thoughtfully made.</span></h2></div><p>다양한 일상에서 꼭 필요한 도구를<br className="desktop-break" /> 가볍고 명확한 경험으로 제공합니다.</p></div>
           <div className="products-grid">{apps.map(item => <ProductCard item={item} key={item.slug} />)}</div>
-          <p className="apps-footnote"><CircleHelp size={15} /> 정확한 Google Play 상세 페이지 주소는 검증 후 연결할 예정입니다. 앱별 화면의 스토어 검색을 이용할 수 있습니다.</p>
+          <p className="apps-footnote"><CircleHelp size={15} /> 위 앱은 추천 앱입니다. 실제 등록된 기출문제·학습·생활 도구는 아래 전체 목록에서 확인할 수 있습니다.</p>
         </div>
       </section>
+      <CatalogSection />
       <section id="values" className="values-section section-anchor"><div className="site-container"><div className="values-heading"><span className="eyebrow eyebrow-light"><span className="eyebrow-line"></span> WHY COV-APPS</span><h2>Less noise.<br /><span>More useful things.</span></h2><p>멋있어 보이는 기능보다 자주 쓰이는 기능이 더 중요하다고 생각합니다.</p></div><div className="values-grid">
         <div className="value-card"><span className="value-icon"><Layers3 size={24} /></span><span className="value-no">01</span><h3>Keep it simple</h3><p>핵심 기능부터 시작해 불필요한 복잡함을 줄입니다.</p></div>
         <div className="value-card"><span className="value-icon"><Code2 size={24} /></span><span className="value-no">02</span><h3>Built with purpose</h3><p>실제 사용 상황에서 도움이 되는 도구를 고민합니다.</p></div>
@@ -187,7 +205,7 @@ function AppDetail({ item }) {
 
 function Support() {
   return <PageShell eyebrow="HELP CENTER" title="고객지원" lead="앱 사용 중 불편한 점이나 개선 아이디어를 알려주세요.">
-    <div className="support-grid"><a href={repoUrl + '/issues/new'} target="_blank" rel="noopener noreferrer" className="support-primary-card"><span className="support-card-icon"><MessageCircle size={28} /></span><h2>문제 신고 및 기능 제안</h2><p>GitHub Issues에 사용 환경과 증상을 남겨 주세요. GitHub 계정 로그인이 필요합니다.</p><span className="support-link">Open an issue <ArrowUpRight size={19} /></span></a><div className="support-secondary-card"><span className="support-card-icon secondary"><CircleHelp size={28} /></span><h2>문의 전 확인하기</h2><p>사용 중인 앱 이름, 앱 버전, Android 버전, 오류 재현 순서를 정리하면 문제를 파악하는 데 도움이 됩니다.</p><a href={repoUrl + '/issues'} target="_blank" rel="noopener noreferrer">기존 문의 보기 <ArrowUpRight size={18} /></a></div></div>
+    <div className="support-grid"><a href={repoUrl + '/issues/new'} target="_blank" rel="noopener noreferrer" className="support-primary-card"><span className="support-card-icon"><MessageCircle size={28} /></span><h2>문제 신고 및 기능 제안</h2><p>GitHub Issues의 버그 신고 또는 기능 제안 양식을 이용하세요. GitHub 계정 로그인이 필요합니다.</p><span className="support-link">Open an issue <ArrowUpRight size={19} /></span></a><div className="support-secondary-card"><span className="support-card-icon secondary"><CircleHelp size={28} /></span><h2>이메일 고객지원</h2><p>GitHub 계정이 없어도 이메일로 문의할 수 있습니다. 앱 이름, 버전, Android 버전과 오류 재현 순서를 보내주세요. 문의: {supportEmail}</p><a href={'mailto:' + supportEmail + '?subject=' + encodeURIComponent('[COV-APPS 문의]')} >이메일 문의 <ArrowUpRight size={18} /></a></div></div>
     <section className="faq-section"><div className="subsection-top"><span className="eyebrow"><span className="eyebrow-line"></span> COMMON QUESTIONS</span><h2>자주 묻는 질문</h2></div><div className="faq-list">
       <details><summary>앱에서 오류가 발생했어요.<ChevronRight size={19} /></summary><p>앱 이름, 버전, 휴대폰 모델, Android 버전, 재현 방법을 정리해 GitHub Issues에 남겨 주세요. 개인정보나 비밀번호는 올리지 마세요.</p></details>
       <details><summary>새로운 기능을 제안하고 싶어요.<ChevronRight size={19} /></summary><p>기능의 사용 목적과 기대하는 동작을 간단히 설명해 주세요. 우선순위와 지원 여부는 상황에 따라 달라질 수 있습니다.</p></details>
@@ -200,8 +218,8 @@ function Support() {
 
 function Privacy() {
   return <PageShell eyebrow="LEGAL / PRIVACY" title="개인정보처리방침" lead="COV-APPS 웹사이트와 앱별 개인정보 안내 문서를 확인하세요.">
-    <div className="legal-grid"><div className="legal-panel"><span className="legal-panel-icon"><Globe2 size={23} /></span><h2>웹사이트 개인정보 안내</h2><p>본 웹사이트에는 자체 회원가입, 문의 입력폼, 광고 스크립트, 자체 방문자 분석 도구를 포함하지 않습니다. GitHub Pages 호스팅 및 외부 링크 서비스에서는 해당 제공자의 정책에 따라 접속 정보가 처리될 수 있습니다.</p><p>Google Play, GitHub 등 외부 사이트로 이동하면 각 서비스의 개인정보처리방침이 적용됩니다. 본 안내는 모바일 앱 자체의 개인정보처리방침을 대신하지 않습니다.</p></div><div className="legal-panel"><span className="legal-panel-icon"><FileText size={23} /></span><h2>앱별 개인정보처리방침</h2><div className="policy-row"><span><strong>Tiny IP Camera</strong><small>공개된 정책 문서</small></span><a href={policyTiny} target="_blank" rel="noopener noreferrer" aria-label="Tiny IP Camera 개인정보처리방침 원문">원문 보기 <ArrowUpRight size={16} /></a></div><div className="policy-row"><span><strong>IP Camera Finder · JLPT 단어장 · 로또 조회</strong><small>정확한 정책 URL 확인 전: 각 앱의 스토어 등록정보 참조</small></span></div></div></div>
-    <div className="legal-notice"><CircleHelp size={21} /><div><strong>정책 링크 업데이트 안내</strong><p>앱별 공식 정책이 확인되는 대로 이 페이지에 추가합니다. 실제 설치·이용 전 각 앱의 Google Play 등록정보를 확인해 주세요.</p></div></div>
+    <div className="legal-grid"><div className="legal-panel"><span className="legal-panel-icon"><Globe2 size={23} /></span><h2>웹사이트 개인정보 안내</h2><p>본 웹사이트에는 자체 회원가입, 문의 입력폼, 광고 스크립트, 자체 방문자 분석 도구를 포함하지 않습니다. GitHub Pages 호스팅 및 외부 링크 서비스에서는 해당 제공자의 정책에 따라 접속 정보가 처리될 수 있습니다.</p><p>Google Play, GitHub 등 외부 사이트로 이동하면 각 서비스의 개인정보처리방침이 적용됩니다. 본 안내는 모바일 앱 자체의 개인정보처리방침을 대신하지 않습니다.</p></div><div className="legal-panel"><span className="legal-panel-icon"><FileText size={23} /></span><h2>앱별 개인정보처리방침</h2><div className="policy-row"><span><strong>Tiny IP Camera</strong><small>공개된 정책 문서</small></span><a href={policyTiny} target="_blank" rel="noopener noreferrer" aria-label="Tiny IP Camera 개인정보처리방침 원문">원문 보기 <ArrowUpRight size={16} /></a></div><div className="policy-row"><span><strong>기출문제 시리즈</strong><small>각 앱의 Google Play 등록정보에서 공식 정책 문서 확인</small></span><a href="/#catalog">앱 목록 <ArrowUpRight size={16} /></a></div><div className="policy-row"><span><strong>그 외 학습 · 도구 앱</strong><small>스토어에 기재된 앱별 개인정보처리방침 참조</small></span></div></div></div>
+    <div className="legal-notice"><CircleHelp size={21} /><div><strong>정책 링크 업데이트 안내</strong><p>앱별 공식 정책이 확인되는 대로 이 페이지에 추가합니다. 실제 설치·이용 전 각 앱의 Google Play 등록정보를 확인해 주세요. 개인정보 관련 문의는 {supportEmail}으로 보내주세요.</p></div></div>
   </PageShell>;
 }
 
